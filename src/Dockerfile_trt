@@ -25,4 +25,4 @@ RUN $PIP_INSTALL cupy-cuda12x pynvjpeg
 COPY src/api_trt api_trt
 
 # Set the container startup command to launch FastAPI
-CMD ["python3", "api_trt/webserver.py"]
+CMD ["python3", "main.py"]
