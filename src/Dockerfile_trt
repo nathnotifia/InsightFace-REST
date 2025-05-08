@@ -1,11 +1,12 @@
 FROM nvcr.io/nvidia/tensorrt:23.05-py3
 
+# Set up environment
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 ENV PIP_INSTALL="python -m pip --no-cache-dir install --upgrade"
 
-# Install required system libraries
-RUN apt-get update &&\
+# Install system libraries
+RUN apt-get update && \
     apt-get install -y \
         libgl1-mesa-glx \
         protobuf-compiler \
@@ -13,16 +14,20 @@ RUN apt-get update &&\
         libb64-0d \
         libturbojpeg \
         python3-opencv \
-        ffmpeg &&\
+        ffmpeg && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy Python dependencies and install them
-COPY src/requirements.txt requirements.txt
+# Set working directory inside the container
+WORKDIR /workspace
+
+# Copy requirements and install Python dependencies
+COPY src/requirements.txt .
 RUN $PIP_INSTALL -r requirements.txt
 RUN $PIP_INSTALL cupy-cuda12x pynvjpeg
 
-# Copy app code
-COPY src/api_trt api_trt
+# Copy all necessary code
+COPY src/api_trt ./api_trt
+COPY main.py .
 
-# Set the container startup command to launch FastAPI
+# Start the main script (designed for RunPod Serverless input)
 CMD ["python3", "main.py"]
