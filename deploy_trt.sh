@@ -31,7 +31,7 @@ max_size=640,640
 # Force FP16 mode for building TensorRT engines, even if it's not supported.
 # Please check that your GPU supports FP16, otherwise performance may drop.
 # For GPUs supporting it gives about 2x performance boost.
-force_fp16=False
+force_fp16=True
 
 
 # DET MODELS:
@@ -43,7 +43,7 @@ force_fp16=False
 det_model=scrfd_10g_gnkps
 
 ## Maximum batch size for detection model
-det_batch_size=1
+det_batch_size=8
 
 # REC MODELS:
 ## None, arcface_r100_v1, glintr100, w600k_r50, w600k_mbf
