@@ -4,25 +4,26 @@ ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 ENV PIP_INSTALL="python -m pip --no-cache-dir install --upgrade"
 
+# Install required system libraries
 RUN apt-get update &&\
-    apt-get install -y\
-            libgl1-mesa-glx \
-            protobuf-compiler \
-            libprotoc-dev \
-            libb64-0d \
-            libturbojpeg \
-            python3-opencv \
-            ffmpeg &&\
+    apt-get install -y \
+        libgl1-mesa-glx \
+        protobuf-compiler \
+        libprotoc-dev \
+        libb64-0d \
+        libturbojpeg \
+        python3-opencv \
+        ffmpeg &&\
     rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
+# Copy Python dependencies and install them
+COPY requirements.txt /app/requirements.txt
+WORKDIR /app
 RUN $PIP_INSTALL -r requirements.txt
-# GPU specific packages
 RUN $PIP_INSTALL cupy-cuda12x pynvjpeg
 
-WORKDIR /app
+# Copy app code (you may add others as needed)
 COPY api_trt /app/api_trt
-COPY entrypoint.sh /app/entrypoint.sh
 
-ENTRYPOINT [ "bash" ]
-CMD ["entrypoint.sh"]
+# Set the container startup command to launch FastAPI
+CMD ["python3", "api_trt/webserver.py"]
